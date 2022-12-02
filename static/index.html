@@ -52,6 +52,18 @@ function drawCircle(context,entity) {
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
+
+        // // colors
+        // var random_red = ((x + y) * 1337) % 255;
+        // var random_green = x % 255;
+        // var random_blue = y % 255;
+        // var rgb_color = `rgb(${random_red}, ${random_green}, ${random_blue})`;
+
+        // fillStyle = entity["colour"];
+        // strokeStyle = rgb_color; //fillStyle;
+        // arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        // stroke(); 
+
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
