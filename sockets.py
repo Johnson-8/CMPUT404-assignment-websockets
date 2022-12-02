@@ -63,8 +63,9 @@ class Client:
     def __init__(self):
         self.queue = queue.Queue()
 
-    def put(self, v):
-        self.queue.put_nowait(v)
+    # put = sends data
+    def put(self, payload):
+        self.queue.put_nowait(payload)
 
     def get(self):
         return self.queue.get()
@@ -76,15 +77,12 @@ def set_listener( entity, data ):
     ''' do something with the update ! '''
 
 myWorld.add_set_listener( set_listener )
-        
-
-def send_all(data):
+    
+# covert data and send to all clients
+def send_to_all(data):
     payload = json.dumps(data)
     for c in clients:
         c.put(payload)
-
-
-
 
 @app.route('/')
 def hello():
@@ -92,20 +90,24 @@ def hello():
     # https://stackoverflow.com/questions/14343812/redirecting-to-url-in-flask
     return redirect('static/index.html', code=301)
 
+# refernce from websocketexmaples
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
-    while True:
-        data = ws.receive()
-        print('received: ' + str(data))
+    try:
+        while True:
+            data = ws.receive()
+            if data:
+                data = json.loads(data)
+                print('data from ws: \n' + str(data))
+                send_to_all(data)
+            else:
+                break
 
-        if data:
-            data = json.loads(data)
-            print('data: ' + str(data))
-            send_all(data)
+    except:
+        return None
 
-    return None
-
+# refernce from websocketexmaples
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
@@ -115,10 +117,19 @@ def subscribe_socket(ws):
     clients.append(ws_client)
     g = gevent.spawn(read_ws, ws, ws_client)
 
-    while True:
-        data = ws_client.get()
-        ws.send(data)
+    try:
+        while True: #should not receive and send back same data?
+            data = ws_client.get()
+            ws.send(data)
+    
+    except Exception as e:
+        print('error: ' + str(e))
 
+    finally:
+        clients.remove(ws_client)
+        gevent.kill(g)
+
+# -----------------------------------------------------------------------------
 
 # I give this to you, this is how you get the raw body/data portion of a post in flask
 # this should come with flask but whatever, it's not my project.

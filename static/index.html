@@ -135,6 +135,7 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
+    socket.send(JSON.stringify(world)); // send world data to server when entity is made
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just modified!
 }
@@ -266,19 +267,20 @@ function wsSetup() {
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
-        debug('Socket open');
-
+        debug('Socket opened');
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
     };
     socket.onmessage = function(msg) {  
         try {
-            debug("WebSocket Recv:" + msg.data);
+            debug("WebSocket Recv:" + msg.data); 
             //XXX: TODO What are you going to do here?
-            let msgData = JSON.parse(msg.data);
-            debug('msg data: ' + msgData);
-            //world
+            let worldData = JSON.parse(msg.data); // get world data and parse to object
+            debug('msg data: ' + msg.data); //TODO comment this out later
+            world = worldData; // set world data to updated world data from ws
+            // should draw frame when world updates
+            update();
             
         } catch (e) {
             alert("socket on message: " + e);
