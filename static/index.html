@@ -255,7 +255,7 @@ function wsSetup() {
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
         debug('Socket open');
-        
+
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
@@ -264,7 +264,9 @@ function wsSetup() {
         try {
             debug("WebSocket Recv:" + msg.data);
             //XXX: TODO What are you going to do here?
-            world = msg.data;
+            let msgData = JSON.parse(msg.data);
+            debug('msg data: ' + msgData);
+            //world
             
         } catch (e) {
             alert("socket on message: " + e);

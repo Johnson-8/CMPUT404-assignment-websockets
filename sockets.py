@@ -59,13 +59,33 @@ class World:
     def world(self):
         return self.space
 
-myWorld = World()        
+class Client:
+    def __init__(self):
+        self.queue = queue.Queue()
+
+    def put(self, v):
+        self.queue.put_nowait(v)
+
+    def get(self):
+        return self.queue.get()
+
+myWorld = World()     
+clients = list()
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
 
 myWorld.add_set_listener( set_listener )
         
+
+def send_all(data):
+    payload = json.dumps(data)
+    for c in clients:
+        c.put(payload)
+
+
+
+
 @app.route('/')
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
@@ -75,7 +95,14 @@ def hello():
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
-    print('incoming data:')
+    while True:
+        data = ws.receive()
+        print('received: ' + str(data))
+
+        if data:
+            data = json.loads(data)
+            print('data: ' + str(data))
+            send_all(data)
 
     return None
 
@@ -84,13 +111,13 @@ def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
     # XXX: TODO IMPLEMENT ME
-    ws = Sockets()
+    ws_client = Client()
+    clients.append(ws_client)
+    g = gevent.spawn(read_ws, ws, ws_client)
 
     while True:
-        data = ws.recieve()
+        data = ws_client.get()
         ws.send(data)
-
-    return None
 
 
 # I give this to you, this is how you get the raw body/data portion of a post in flask
