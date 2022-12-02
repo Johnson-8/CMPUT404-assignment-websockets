@@ -53,13 +53,6 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Contributors
-============
-
-* Mark Galloway
-* Abram Hindle
-* Cole Mackenzie
-
 Copyright 2022 Johnson Zhao
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,3 +66,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+
+Contributors
+============
+
+* Mark Galloway
+* Abram Hindle
+* Cole Mackenzie
