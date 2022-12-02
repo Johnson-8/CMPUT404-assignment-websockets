@@ -80,5 +80,7 @@ References
 ==========
 
 https://stackoverflow.com/questions/14343812/redirecting-to-url-in-flask
+
 https://uofa-cmput404.github.io/cmput404-slides/09-Websockets.html
+
 https://github.com/uofa-cmput404/cmput404-slides/tree/master/examples/WebSocketsExamples
