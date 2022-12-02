@@ -35,10 +35,16 @@ var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
 var wscounter = 0;
 var socket;
+var isDebug = Boolean;
 
+isDebug = false;
 function debug(str) {
     var debugDiv = document.getElementById('debug');
-    debugDiv.innerHTML = "" + str;
+    if (isDebug) {
+        debugDiv.innerHTML = "" + str;
+    } else {
+        debugDiv.innerHTML = "";
+    }
 }
 debug("Test");
 
@@ -53,21 +59,17 @@ function drawCircle(context,entity) {
         var y = entity["y"];
         //moveTo(x,y);
 
-        // // colors
-        // var random_red = ((x + y) * 1337) % 255;
-        // var random_green = x % 255;
-        // var random_blue = y % 255;
-        // var rgb_color = `rgb(${random_red}, ${random_green}, ${random_blue})`;
+        // colors based on canvas coords, same as from assignment 4
+        var random_red = ((x + y) * 1337) % 255;
+        var random_green = x % 255;
+        var random_blue = y % 255;
+        var rgb_color = `rgb(${random_red}, ${random_green}, ${random_blue})`;
 
-        // fillStyle = entity["colour"];
-        // strokeStyle = rgb_color; //fillStyle;
-        // arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        // stroke(); 
-
-        fillStyle = entity["colour"];
-        strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        fillStyle = rgb_color; // inner circle
+        strokeStyle = rgb_color; // circle circumfrence color
+        arc(x, y, (entity["radius"])?entity["radius"]:5, 0, 2.0 * Math.PI, false);  
+        fill(); // this fills in circle so its not a doughnut
+        stroke();                               
     }
 }
 
@@ -76,7 +78,7 @@ function prepEntity(entity) {
         entity["colour"] = "#FF0000";
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 10;
     }
     return entity;
 }
@@ -84,7 +86,7 @@ function prepEntity(entity) {
 function clearFrame() {
     with(context) {
 	moveTo(0,0);
-	fillStyle = "#000";
+	fillStyle = "#DDD";
 	fillRect(0,0,W,H);
     }
 
@@ -140,8 +142,9 @@ function addEntity(entity, data) {
     //XXX: Send a XHTML Request that updates the entity you just modified!
 }
 var counter = 0;
+let max_dots = 200;
 function addEntityWithoutName(data) {
-    var name = "X"+(counter++)%100;
+    var name = "X"+(counter++)%max_dots;
     addEntity(name,data);
 }
 
@@ -253,7 +256,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
     addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+                          'radius':5});
 });
 
 
@@ -277,10 +280,9 @@ function wsSetup() {
             debug("WebSocket Recv:" + msg.data); 
             //XXX: TODO What are you going to do here?
             let worldData = JSON.parse(msg.data); // get world data and parse to object
-            debug('msg data: ' + msg.data); //TODO comment this out later
+            debug('msg data: ' + msg.data);
             world = worldData; // set world data to updated world data from ws
-            // should draw frame when world updates
-            update();
+            update(); // should draw frame when world updates
             
         } catch (e) {
             alert("socket on message: " + e);
@@ -294,7 +296,8 @@ wsSetup();
 
 
 // 30 frames per second
-setInterval( update, 1000/30.0);
+let fps = 60;
+setInterval( update, 1000/fps);
 
 
     </script>
