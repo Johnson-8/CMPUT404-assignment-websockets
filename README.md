@@ -74,3 +74,9 @@ Contributors
 * Mark Galloway
 * Abram Hindle
 * Cole Mackenzie
+
+
+References
+==========
+
+https://stackoverflow.com/questions/14343812/redirecting-to-url-in-flask

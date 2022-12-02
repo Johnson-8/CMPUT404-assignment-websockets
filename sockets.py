@@ -75,6 +75,8 @@ def hello():
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
+    print('incoming data:')
+
     return None
 
 @sockets.route('/subscribe')
@@ -82,6 +84,12 @@ def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
     # XXX: TODO IMPLEMENT ME
+    ws = Sockets()
+
+    while True:
+        data = ws.recieve()
+        ws.send(data)
+
     return None
 
 
